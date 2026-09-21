@@ -1,255 +1,388 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>$PWAR — PumpWar</title>
-<meta name="description" content="$PWAR, le token utilitaire de PumpWar. Supply fixe, autorités révoquées. Boost, stake, govern l'arène memecoin." />
-<meta property="og:title" content="$PWAR — PumpWar" />
-<meta property="og:description" content="Le token de l'arène memecoin. Boost. Stake. Govern." />
-<meta name="theme-color" content="#070a0b" />
+<meta name="description" content="$PWAR is the token that runs the PumpWar arena. Fixed supply, mint & freeze renounced, backed by a live on-chain product. Boost. Stake. Govern." />
+<meta property="og:title" content="$PWAR — The token of the arena" />
+<meta property="og:description" content="Not another memecoin. $PWAR powers PumpWar, a live on-chain battleground. Fixed supply, authorities renounced." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#08080a" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg:#070a0b; --bg2:#0b1013; --panel:rgba(255,255,255,.03); --panel-brd:rgba(0,255,102,.18);
-    --ink:#e9fbf0; --muted:#8aa79a; --acc:#00ff66; --acc2:#ff2e88; --acc3:#ffe066;
-    --glow:0 0 24px rgba(0,255,102,.35);
-    --pixel:"Press Start 2P", ui-monospace, monospace;
-    --sans:"Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --void:#08080a; --surface:#111116; --surface-2:#191920; --glowline:#232330;
+    --bone:#f2f2f7; --ash:#9494a8;
+    --pump:#00ff66; --dump:#ff0055; --gold:#ffd23b; --violet:#8b5cf6; --sol:#9945ff; --base:#3c8aff;
+    --panel-fill:#111116db;
+    --grid-line:#00ff6629; --grid-line-strong:#8b5cf638;
+    --pixel-notch:8px;
+    --font-pixel:"Press Start 2P", ui-monospace, monospace;
+    --font-body:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display:"Chakra Petch", ui-monospace, "SFMono-Regular", monospace;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
-    line-height:1.55; overflow-x:hidden;
-    background-image:
-      radial-gradient(60% 50% at 50% -5%, rgba(0,255,102,.12), transparent 70%),
-      radial-gradient(40% 40% at 100% 0%, rgba(255,46,136,.10), transparent 70%);
+    margin:0; background:var(--void); color:var(--bone);
+    font-family:var(--font-body); line-height:1.6; overflow-x:hidden; position:relative;
   }
-  .wrap{max-width:1040px; margin-inline:auto; padding-inline:20px}
-  a{color:var(--acc); text-decoration:none}
-  h1,h2,h3{line-height:1.1; letter-spacing:.5px}
-  .pixel{font-family:var(--pixel)}
-  .muted{color:var(--muted)}
-  .glow{text-shadow:var(--glow)}
 
-  header{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
-    background:linear-gradient(#070a0bdd,#070a0b99); border-bottom:1px solid var(--panel-brd)}
-  header .wrap{display:flex; align-items:center; justify-content:space-between; padding-block:14px}
-  .brand{font-family:var(--pixel); font-size:14px; color:var(--acc)}
-  .brand span{color:var(--ink)}
-  .nav{display:flex; gap:18px; font-size:14px; font-weight:600}
-  .nav a{color:var(--muted)} .nav a:hover{color:var(--ink)}
-  @media(max-width:620px){.nav{display:none}}
+  /* ── Signature arcade floor grid ─────────────────────────── */
+  .grid3d{position:fixed; inset:0; z-index:-2; perspective:340px; perspective-origin:50% 0; overflow:hidden; pointer-events:none}
+  .grid3d::before{
+    content:""; position:absolute; inset:30% -60% -70%; transform-origin:50% 0;
+    background-image:linear-gradient(90deg,var(--grid-line-strong) 1px,transparent 1px),linear-gradient(0deg,var(--grid-line) 1px,transparent 1px);
+    background-size:48px 48px,48px 48px; transform:rotateX(74deg); animation:grid-drift 3.6s linear infinite;
+  }
+  @keyframes grid-drift{from{transform:rotateX(74deg) translateY(0)}to{transform:rotateX(74deg) translateY(48px)}}
+  .glowtop{position:fixed; inset:0 0 auto 0; height:60vh; z-index:-1; pointer-events:none;
+    background:radial-gradient(60% 60% at 50% -10%, rgba(0,255,102,.10), transparent 70%),
+               radial-gradient(40% 40% at 90% 0%, rgba(139,92,246,.12), transparent 70%)}
 
-  .btn{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:15px;
-    padding:13px 20px; border-radius:12px; border:1px solid var(--acc);
-    background:var(--acc); color:#031a0c; box-shadow:var(--glow); transition:transform .12s ease, box-shadow .2s}
-  .btn:hover{transform:translateY(-2px); box-shadow:0 0 34px rgba(0,255,102,.55)}
-  .btn.ghost{background:transparent; color:var(--acc); box-shadow:none}
+  /* ── Type ────────────────────────────────────────────────── */
+  .pixel{font-family:var(--font-pixel); -webkit-font-smoothing:none; letter-spacing:.02em; text-transform:uppercase}
+  .disp{font-family:var(--font-display)}
+  .glow-pump{color:var(--pump); text-shadow:0 0 3px #00ff668c, 0 0 12px #00ff6647}
+  a{color:var(--pump); text-decoration:none}
+  h1,h2,h3{margin:0; line-height:1.08; text-wrap:balance}
+  .eyebrow{font-family:var(--font-pixel); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ash)}
+  .muted{color:var(--ash)}
+
+  .wrap{max-width:1080px; margin-inline:auto; padding-inline:20px}
+
+  /* ── Shapes: pixel-corners + glass + neon ────────────────── */
+  .pxc{clip-path:polygon(var(--pixel-notch) 0,calc(100% - var(--pixel-notch)) 0,100% var(--pixel-notch),100% calc(100% - var(--pixel-notch)),calc(100% - var(--pixel-notch)) 100%,var(--pixel-notch) 100%,0 calc(100% - var(--pixel-notch)),0 var(--pixel-notch))}
+  .panel{background:var(--panel-fill); background-image:linear-gradient(180deg, rgba(25,25,32,.7) 0, transparent 40%);
+    box-shadow:inset 0 0 0 1px var(--glowline)}
+  .acc{--neon:var(--pump)}
+  .acc.panel{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--neon) 42%, var(--glowline)), inset 0 0 26px -18px var(--neon)}
+  .neon-pump{--neon:var(--pump)} .neon-gold{--neon:var(--gold)} .neon-violet{--neon:var(--violet)}
+  .neon-dump{--neon:var(--dump)} .neon-sol{--neon:var(--sol)}
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+  .btn{display:inline-flex; align-items:center; gap:9px; font-family:var(--font-pixel); font-size:11px; letter-spacing:.06em;
+    text-transform:uppercase; padding:15px 22px; color:var(--void); background:var(--pump);
+    box-shadow:0 0 18px -6px var(--pump); transition:transform .12s ease, box-shadow .2s;
+    clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 0 30px -4px var(--pump)}
+  .btn.ghost{background:transparent; color:var(--pump); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pump) 55%, transparent)}
   .btn.ghost:hover{background:rgba(0,255,102,.08)}
+  a:focus-visible,.btn:focus-visible,button:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
 
-  .hero{padding-block:64px 40px; text-align:center}
-  .badge{display:inline-flex; gap:8px; align-items:center; font-family:var(--pixel); font-size:9px;
-    color:var(--acc); border:1px solid var(--panel-brd); border-radius:999px; padding:8px 14px;
-    background:rgba(0,255,102,.05); margin-bottom:26px}
-  .hero h1{font-family:var(--pixel); font-size:clamp(34px,9vw,76px); margin:0 0 10px}
-  .hero h1 .amp{color:var(--acc)}
-  .hero .tag{font-size:clamp(17px,3.6vw,24px); font-weight:600; margin:0 auto 8px; max-width:22ch}
-  .hero .sub{color:var(--muted); max-width:52ch; margin:0 auto 30px}
+  /* ── Header ──────────────────────────────────────────────── */
+  header{position:sticky; top:0; z-index:30; backdrop-filter:blur(12px);
+    background:linear-gradient(#08080aee,#08080a99); border-bottom:1px solid var(--glowline)}
+  header .wrap{display:flex; align-items:center; justify-content:space-between; padding-block:14px; gap:16px}
+  .brand{font-family:var(--font-pixel); font-size:15px; color:var(--pump); text-shadow:0 0 10px #00ff6640}
+  .brand b{color:var(--bone); font-weight:400}
+  .nav{display:flex; gap:22px; font-family:var(--font-display); font-size:13px; text-transform:uppercase; letter-spacing:.08em}
+  .nav a{color:var(--ash)} .nav a:hover{color:var(--bone)}
+  .hbtn{font-family:var(--font-pixel); font-size:10px; letter-spacing:.05em; color:var(--void); background:var(--pump); padding:11px 15px;
+    clip-path:polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px)}
+  @media(max-width:820px){.nav{display:none}}
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  .hero{text-align:center; padding-block:70px 46px}
+  .badge{display:inline-flex; gap:8px; align-items:center; font-family:var(--font-pixel); font-size:8.5px; letter-spacing:.12em;
+    color:var(--pump); padding:9px 15px; margin-bottom:30px; background:rgba(0,255,102,.04)}
+  .hero h1{font-family:var(--font-pixel); font-size:clamp(40px,11vw,92px); line-height:1; margin-bottom:20px}
+  .hero h1 .d{color:var(--pump)}
+  .hero .tag{font-family:var(--font-display); font-weight:600; font-size:clamp(20px,4.4vw,30px); margin:0 auto 14px; max-width:20ch}
+  .hero .sub{color:var(--ash); max-width:56ch; margin:0 auto 32px; font-size:clamp(15px,2vw,17px)}
   .cta{display:flex; gap:14px; justify-content:center; flex-wrap:wrap}
 
-  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:44px}
-  .stat{background:var(--panel); border:1px solid var(--panel-brd); border-radius:14px; padding:18px 14px; text-align:center}
-  .stat b{display:block; font-family:var(--pixel); font-size:15px; color:var(--acc); margin-bottom:8px}
-  .stat span{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px}
-  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:52px}
+  .stat{padding:20px 12px; text-align:center}
+  .stat b{display:block; font-family:var(--font-pixel); font-size:15px; color:var(--pump); margin-bottom:10px}
+  .stat span{font-family:var(--font-display); font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ash)}
+  @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
 
-  section{padding-block:56px}
-  .kicker{font-family:var(--pixel); font-size:10px; color:var(--acc2); letter-spacing:1px; margin-bottom:12px}
-  h2.title{font-size:clamp(24px,5vw,38px); margin:0 0 8px}
-  .lead{color:var(--muted); max-width:60ch; margin-bottom:28px}
+  /* ── Marquee ─────────────────────────────────────────────── */
+  .marquee{border-block:1px solid var(--glowline); overflow:hidden; margin-top:56px; background:rgba(255,255,255,.015)}
+  .marquee .track{display:flex; gap:44px; width:max-content; padding-block:14px; animation:scroll 22s linear infinite; white-space:nowrap}
+  .marquee span{font-family:var(--font-pixel); font-size:11px; letter-spacing:.1em; color:var(--ash)}
+  .marquee span em{color:var(--pump); font-style:normal}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
-  @media(max-width:760px){.cards{grid-template-columns:1fr}}
-  .card{background:var(--panel); border:1px solid var(--panel-brd); border-radius:16px; padding:24px;
-    transition:transform .15s ease, border-color .2s}
-  .card:hover{transform:translateY(-4px); border-color:rgba(0,255,102,.4)}
-  .card .ico{font-size:26px; margin-bottom:12px}
-  .card h3{margin:0 0 8px; font-size:19px}
-  .card p{margin:0; color:var(--muted); font-size:15px}
+  /* ── Sections ────────────────────────────────────────────── */
+  section{padding-block:66px}
+  .head{margin-bottom:34px}
+  .head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(26px,5vw,42px); margin-top:10px}
+  .head p{color:var(--ash); max-width:62ch; margin-top:10px}
 
-  .allocs{display:grid; gap:16px; margin-top:8px}
-  .alloc{background:var(--panel); border:1px solid var(--panel-brd); border-radius:14px; padding:16px 18px}
-  .alloc .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; gap:10px; flex-wrap:wrap}
-  .alloc .lab{font-weight:700}
-  .alloc .amt{color:var(--muted); font-size:14px; font-variant-numeric:tabular-nums}
-  .alloc .pct{font-family:var(--pixel); font-size:13px; color:var(--acc)}
-  .bar{height:10px; border-radius:99px; background:rgba(255,255,255,.06); overflow:hidden}
-  .bar > i{display:block; height:100%; border-radius:99px;
-    background:linear-gradient(90deg, var(--acc), var(--acc3)); box-shadow:var(--glow)}
+  .grid{display:grid; gap:16px}
+  .g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.g4,.g3,.g2{grid-template-columns:1fr}}
 
-  .contract{background:var(--panel); border:1px solid var(--panel-brd); border-radius:16px; padding:22px; display:flex;
-    align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
-  .contract code{font-family:ui-monospace,monospace; color:var(--acc); word-break:break-all; font-size:14px}
-  .copy{cursor:pointer; border:1px solid var(--acc); background:transparent; color:var(--acc);
-    border-radius:10px; padding:9px 14px; font-weight:700; font-family:var(--sans)}
-  .copy:hover{background:rgba(0,255,102,.1)}
+  .card{padding:26px}
+  .card .ic{font-size:24px; margin-bottom:14px; display:block}
+  .card h3{font-family:var(--font-display); font-weight:600; font-size:19px; margin-bottom:8px}
+  .card p{margin:0; color:var(--ash); font-size:15px}
+  .card .tagpx{font-family:var(--font-pixel); font-size:8px; letter-spacing:.12em; color:var(--neon,var(--pump)); display:block; margin-bottom:12px}
 
-  .road{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
-  @media(max-width:760px){.road{grid-template-columns:1fr}}
-  .phase{background:var(--panel); border:1px solid var(--panel-brd); border-radius:14px; padding:18px}
-  .phase .p{font-family:var(--pixel); font-size:10px; color:var(--acc2); margin-bottom:10px}
-  .phase ul{margin:0; padding-left:18px; color:var(--muted); font-size:14px}
-  .phase li{margin-bottom:6px}
+  /* ── Tokenomics ──────────────────────────────────────────── */
+  .allocs{display:grid; gap:14px}
+  .alloc{padding:16px 20px}
+  .alloc .row{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:10px}
+  .alloc .lab{font-family:var(--font-display); font-weight:600}
+  .alloc .amt{color:var(--ash); font-size:13px; font-variant-numeric:tabular-nums}
+  .alloc .pct{font-family:var(--font-pixel); font-size:12px; color:var(--pump)}
+  .bar{height:9px; background:rgba(255,255,255,.05); overflow:hidden}
+  .bar > i{display:block; height:100%; background:linear-gradient(90deg,var(--pump),var(--gold)); box-shadow:0 0 14px -3px var(--pump)}
+  .trust{margin-top:18px; display:grid; gap:10px; grid-template-columns:repeat(3,1fr)}
+  .trust div{padding:14px 16px; font-size:13px; color:var(--ash)}
+  .trust b{color:var(--bone); font-family:var(--font-display)}
+  @media(max-width:680px){.trust{grid-template-columns:1fr}}
 
-  .disc{border:1px solid rgba(255,224,102,.3); background:rgba(255,224,102,.05); border-radius:14px;
-    padding:18px 20px; color:#d9cfa0; font-size:14px}
-  footer{border-top:1px solid var(--panel-brd); padding-block:34px; text-align:center; color:var(--muted); font-size:14px}
-  footer .links{display:flex; gap:20px; justify-content:center; margin-bottom:14px; flex-wrap:wrap}
-  footer a{color:var(--muted); font-weight:600} footer a:hover{color:var(--acc)}
+  /* ── Flywheel ────────────────────────────────────────────── */
+  .flow{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; counter-reset:s}
+  .flow .step{padding:22px 20px; position:relative}
+  .flow .step::before{counter-increment:s; content:"0" counter(s); font-family:var(--font-pixel); font-size:10px; color:var(--pump); display:block; margin-bottom:12px}
+  .flow .step h4{font-family:var(--font-display); font-size:16px; margin:0 0 6px}
+  .flow .step p{margin:0; color:var(--ash); font-size:14px}
+  @media(max-width:900px){.flow{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.flow{grid-template-columns:1fr}}
 
-  @media(prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+  /* ── Contract ────────────────────────────────────────────── */
+  .contract{padding:22px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  .contract code{font-family:ui-monospace,monospace; color:var(--pump); word-break:break-all; font-size:14px}
+  .copy{cursor:pointer; font-family:var(--font-pixel); font-size:9px; letter-spacing:.05em; color:var(--pump); background:transparent;
+    border:1px solid color-mix(in srgb,var(--pump) 50%,transparent); padding:11px 14px}
+  .copy:hover{background:rgba(0,255,102,.08)}
+
+  /* ── FAQ ─────────────────────────────────────────────────── */
+  .faq{display:grid; gap:12px}
+  details{padding:18px 20px}
+  details summary{font-family:var(--font-display); font-weight:600; font-size:16px; cursor:pointer; list-style:none; display:flex; justify-content:space-between; gap:12px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+"; color:var(--pump); font-family:var(--font-pixel); font-size:14px}
+  details[open] summary::after{content:"–"}
+  details p{margin:12px 0 0; color:var(--ash); font-size:15px}
+
+  /* ── Disclaimer + footer ─────────────────────────────────── */
+  .disc{padding:18px 22px; color:#d9cfa0; font-size:13.5px}
+  .disc.neon-gold{--neon:var(--gold)}
+  .disc.acc.panel{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 34%,var(--glowline))}
+  footer{border-top:1px solid var(--glowline); padding-block:36px; margin-top:40px}
+  footer .row{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap}
+  footer .links{display:flex; gap:22px; flex-wrap:wrap; font-family:var(--font-display); font-size:13px; text-transform:uppercase; letter-spacing:.08em}
+  footer .links a{color:var(--ash)} footer .links a:hover{color:var(--pump)}
+  footer .fine{color:var(--ash); font-size:12px}
+
+  @media(prefers-reduced-motion:reduce){.grid3d::before,.marquee .track{animation:none}}
 </style>
 </head>
 <body>
 
+<div class="grid3d" aria-hidden="true"></div>
+<div class="glowtop" aria-hidden="true"></div>
+
 <header>
   <div class="wrap">
-    <div class="brand">PUMP<span>WAR</span></div>
+    <div class="brand">PUMP<b>WAR</b></div>
     <nav class="nav">
-      <a href="#about">Token</a>
+      <a href="#different">Why</a>
+      <a href="#utility">Utility</a>
       <a href="#tokenomics">Tokenomics</a>
-      <a href="#get">Obtenir</a>
-      <a href="#roadmap">Roadmap</a>
+      <a href="#flywheel">How it works</a>
+      <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn ghost" href="https://pumpwar.xyz">Arène ↗</a>
+    <a class="hbtn" href="https://pumpwar.xyz">Enter arena ↗</a>
   </div>
 </header>
 
 <main class="wrap">
 
+  <!-- HERO -->
   <section class="hero">
-    <span class="badge">● SUPPLY FIXE · MINT &amp; FREEZE RÉVOQUÉES</span>
-    <h1><span class="amp">$</span>PWAR</h1>
-    <p class="tag glow">Le token de l'arène.</p>
-    <p class="sub">Boost tes projets vers le trône, stake pour des récompenses, et gouverne l'arène. Le classement s'achète, il ne se mérite pas.</p>
+    <span class="badge pxc panel acc neon-pump">◆ FIXED SUPPLY · MINT &amp; FREEZE RENOUNCED</span>
+    <h1><span class="d">$</span>PWAR</h1>
+    <p class="tag">The token that <span class="glow-pump">runs the arena</span>.</p>
+    <p class="sub">PumpWar is a live on-chain battleground where memecoins fight for the throne. $PWAR is its fuel — boost projects up the board, stake it, and govern the arena. The board is bought, not earned.</p>
     <div class="cta">
-      <a class="btn" href="#get">Obtenir $PWAR</a>
-      <a class="btn ghost" href="#tokenomics">Voir la tokenomics</a>
+      <a class="btn" href="#get">Get $PWAR</a>
+      <a class="btn ghost" href="#tokenomics">Read tokenomics</a>
     </div>
 
     <div class="stats">
-      <div class="stat"><b>1 Md</b><span>Supply totale</span></div>
-      <div class="stat"><b>9</b><span>Décimales</span></div>
-      <div class="stat"><b>Solana</b><span>Réseau (SPL)</span></div>
-      <div class="stat"><b>Révoquée</b><span>Mint authority</span></div>
+      <div class="stat pxc panel"><b>1B</b><span>Total supply</span></div>
+      <div class="stat pxc panel"><b>9</b><span>Decimals</span></div>
+      <div class="stat pxc panel"><b>Solana</b><span>SPL token</span></div>
+      <div class="stat pxc panel"><b>Renounced</b><span>Mint authority</span></div>
+    </div>
+  </section>
+</main>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>THE BOARD IS BOUGHT, NOT EARNED</span><span>✦</span><span><em>PUMP</em> OR BE <em>DUMPED</em></span><span>✦</span><span>BACKED BY A LIVE PRODUCT</span><span>✦</span><span>SUPPLY <em>FIXED</em> · AUTHORITIES <em>RENOUNCED</em></span><span>✦</span>
+    <span>THE BOARD IS BOUGHT, NOT EARNED</span><span>✦</span><span><em>PUMP</em> OR BE <em>DUMPED</em></span><span>✦</span><span>BACKED BY A LIVE PRODUCT</span><span>✦</span><span>SUPPLY <em>FIXED</em> · AUTHORITIES <em>RENOUNCED</em></span><span>✦</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- WHY DIFFERENT -->
+  <section id="different">
+    <div class="head">
+      <div class="eyebrow">// Not another memecoin</div>
+      <h2>Four reasons $PWAR isn't vapor</h2>
+      <p>Most tokens are a chart and a promise. $PWAR ships with a working product, verifiable on-chain, and no hidden levers.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card pxc panel acc neon-pump"><span class="tagpx">Live product</span><span class="ic">🕹️</span><h3>Backed by a real arena</h3><p>$PWAR powers <a href="https://pumpwar.xyz">pumpwar.xyz</a> — already running, not a roadmap slide.</p></div>
+      <div class="card pxc panel acc neon-violet"><span class="tagpx">Verifiable</span><span class="ic">🔗</span><h3>On-chain verified</h3><p>Every boost is a real transfer, checked against the chain server-side. No fake volume.</p></div>
+      <div class="card pxc panel acc neon-gold"><span class="tagpx">No levers</span><span class="ic">🔒</span><h3>Fixed &amp; renounced</h3><p>1B minted once. Mint and freeze authority renounced — no inflation, no freezing, no rug switch.</p></div>
+      <div class="card pxc panel acc neon-sol"><span class="tagpx">Day one</span><span class="ic">⚡</span><h3>Utility, not vibes</h3><p>Boost, stake, govern and earn. The token does something the moment it lists.</p></div>
     </div>
   </section>
 
-  <section id="about">
-    <div class="kicker">// À QUOI ÇA SERT</div>
-    <h2 class="title">Un token utilitaire, pas juste un ticker</h2>
-    <p class="lead">$PWAR est le carburant de PumpWar. Trois usages, branchés directement dans l'arène.</p>
-    <div class="cards">
-      <div class="card">
-        <div class="ico">⚔️</div>
-        <h3>Boost</h3>
-        <p>Paie tes boosts en $PWAR pour propulser un projet dans le classement et déloger le roi du trône.</p>
-      </div>
-      <div class="card">
-        <div class="ico">🔒</div>
-        <h3>Stake</h3>
-        <p>Verrouille tes $PWAR pour gagner des récompenses et un multiplicateur de score dans l'arène.</p>
-      </div>
-      <div class="card">
-        <div class="ico">🗳️</div>
-        <h3>Govern</h3>
-        <p>Vote les projets mis en avant et les règles de l'arène. Les holders décident de la direction.</p>
-      </div>
+  <!-- UTILITY -->
+  <section id="utility">
+    <div class="head">
+      <div class="eyebrow">// What it does</div>
+      <h2>Fuel for the fight</h2>
+      <p>$PWAR plugs straight into the arena — a standard SPL token, with the utility built on top.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card pxc panel acc neon-pump"><span class="ic">⚔️</span><h3>Boost</h3><p>Pay boosts in $PWAR to shove a project up the board and knock the king off the throne.</p></div>
+      <div class="card pxc panel acc neon-violet"><span class="ic">🔒</span><h3>Stake</h3><p>Lock $PWAR for rewards and a score multiplier when you fight in the arena.</p></div>
+      <div class="card pxc panel acc neon-gold"><span class="ic">🗳️</span><h3>Govern</h3><p>Vote featured projects and arena rules. Holders steer where the war goes next.</p></div>
+      <div class="card pxc panel acc neon-dump"><span class="ic">💰</span><h3>Earn</h3><p>A share of arena activity flows back to stakers and the most active players.</p></div>
     </div>
   </section>
 
+  <!-- FLYWHEEL -->
+  <section id="flywheel">
+    <div class="head">
+      <div class="eyebrow">// The loop</div>
+      <h2>How the value flows</h2>
+      <p>$PWAR is designed as a loop, not a one-way exit. Activity feeds rewards; rewards pull in activity.</p>
+    </div>
+    <div class="flow">
+      <div class="step pxc panel"><h4>Players boost</h4><p>Boosts are paid in $PWAR to climb the board and take the throne.</p></div>
+      <div class="step pxc panel"><h4>Fees split</h4><p>A share of every boost is routed to rewards and buybacks.</p></div>
+      <div class="step pxc panel"><h4>Stakers earn</h4><p>Locked $PWAR captures that flow — holding the line pays.</p></div>
+      <div class="step pxc panel"><h4>Arena grows</h4><p>Rewards pull in more players, more boosts, more demand.</p></div>
+    </div>
+  </section>
+
+  <!-- TOKENOMICS -->
   <section id="tokenomics">
-    <div class="kicker">// RÉPARTITION</div>
-    <h2 class="title">Tokenomics</h2>
-    <p class="lead">1 000 000 000 $PWAR, supply figée dès le mint (mint authority révoquée). Aucune inflation possible.</p>
+    <div class="head">
+      <div class="eyebrow">// Distribution</div>
+      <h2>Tokenomics</h2>
+      <p>1,000,000,000 $PWAR, supply frozen the moment it mints — mint authority renounced, so inflation is impossible.</p>
+    </div>
     <div class="allocs">
-      <div class="alloc">
-        <div class="row"><span class="lab">Community &amp; Rewards</span><span class="amt">400 000 000</span><span class="pct">40%</span></div>
-        <div class="bar"><i style="width:40%"></i></div>
-      </div>
-      <div class="alloc">
-        <div class="row"><span class="lab">Liquidité (DEX)</span><span class="amt">200 000 000</span><span class="pct">20%</span></div>
-        <div class="bar"><i style="width:20%"></i></div>
-      </div>
-      <div class="alloc">
-        <div class="row"><span class="lab">Treasury / Écosystème</span><span class="amt">200 000 000</span><span class="pct">20%</span></div>
-        <div class="bar"><i style="width:20%"></i></div>
-      </div>
-      <div class="alloc">
-        <div class="row"><span class="lab">Team — vesting (cliff 12 mois)</span><span class="amt">150 000 000</span><span class="pct">15%</span></div>
-        <div class="bar"><i style="width:15%"></i></div>
-      </div>
-      <div class="alloc">
-        <div class="row"><span class="lab">Marketing / Advisors</span><span class="amt">50 000 000</span><span class="pct">5%</span></div>
-        <div class="bar"><i style="width:5%"></i></div>
-      </div>
+      <div class="alloc pxc panel"><div class="row"><span class="lab">Community &amp; Rewards</span><span class="amt">400,000,000</span><span class="pct">40%</span></div><div class="bar"><i style="width:40%"></i></div></div>
+      <div class="alloc pxc panel"><div class="row"><span class="lab">Liquidity (DEX)</span><span class="amt">200,000,000</span><span class="pct">20%</span></div><div class="bar"><i style="width:20%"></i></div></div>
+      <div class="alloc pxc panel"><div class="row"><span class="lab">Treasury / Ecosystem</span><span class="amt">200,000,000</span><span class="pct">20%</span></div><div class="bar"><i style="width:20%"></i></div></div>
+      <div class="alloc pxc panel"><div class="row"><span class="lab">Team — vesting, 12-month cliff</span><span class="amt">150,000,000</span><span class="pct">15%</span></div><div class="bar"><i style="width:15%"></i></div></div>
+      <div class="alloc pxc panel"><div class="row"><span class="lab">Marketing / Advisors</span><span class="amt">50,000,000</span><span class="pct">5%</span></div><div class="bar"><i style="width:5%"></i></div></div>
+    </div>
+    <div class="trust">
+      <div class="pxc panel"><b>LP locked.</b> Liquidity is locked after the pool is created.</div>
+      <div class="pxc panel"><b>Team vested.</b> On-chain vesting via Streamflow — no early dump.</div>
+      <div class="pxc panel"><b>Treasury in multisig.</b> Held behind a Squads multisig, not one wallet.</div>
     </div>
   </section>
 
+  <!-- CONTRACT -->
   <section id="contract">
-    <div class="kicker">// ON-CHAIN</div>
-    <h2 class="title">Contrat</h2>
-    <p class="lead">Adresse du mint SPL — vérifie tout sur l'explorer avant d'acheter.</p>
-    <div class="contract">
-      <code id="mint">À_RENSEIGNER_APRÈS_DÉPLOIEMENT</code>
-      <button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('mint').textContent).then(()=>{this.textContent='Copié ✓';setTimeout(()=>this.textContent='Copier',1500)})">Copier</button>
+    <div class="head">
+      <div class="eyebrow">// On-chain</div>
+      <h2>Contract address</h2>
+      <p>Always verify the mint on a Solana explorer before you buy. Anyone can fake a ticker.</p>
+    </div>
+    <div class="contract pxc panel acc neon-pump">
+      <code id="mint">MINT_ADDRESS_AFTER_LAUNCH</code>
+      <button class="copy" id="copyBtn" type="button">Copy</button>
     </div>
   </section>
 
+  <!-- GET -->
   <section id="get">
-    <div class="kicker">// COMMENT L'OBTENIR</div>
-    <h2 class="title">Se procurer $PWAR</h2>
-    <div class="cards">
-      <div class="card"><div class="ico">1️⃣</div><h3>Un wallet Solana</h3><p>Phantom, Solflare ou un autre wallet Solana, approvisionné en SOL.</p></div>
-      <div class="card"><div class="ico">2️⃣</div><h3>Swap sur un DEX</h3><p>Échange du SOL contre $PWAR via Jupiter / Raydium (lien après le listing).</p></div>
-      <div class="card"><div class="ico">3️⃣</div><h3>Entre dans l'arène</h3><p>Utilise tes $PWAR pour booster, staker et voter sur <a href="https://pumpwar.xyz">pumpwar.xyz</a>.</p></div>
+    <div class="head">
+      <div class="eyebrow">// Get in</div>
+      <h2>Grab $PWAR</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card pxc panel"><span class="ic">👛</span><h3>1 · A Solana wallet</h3><p>Phantom, Solflare or any Solana wallet, funded with some SOL.</p></div>
+      <div class="card pxc panel"><span class="ic">🔄</span><h3>2 · Swap on a DEX</h3><p>Trade SOL for $PWAR on Jupiter / Raydium (link goes live at listing).</p></div>
+      <div class="card pxc panel"><span class="ic">🏆</span><h3>3 · Enter the arena</h3><p>Boost, stake and vote at <a href="https://pumpwar.xyz">pumpwar.xyz</a>.</p></div>
     </div>
   </section>
 
+  <!-- ROADMAP -->
   <section id="roadmap">
-    <div class="kicker">// ROADMAP</div>
-    <h2 class="title">Feuille de route</h2>
-    <div class="road">
-      <div class="phase"><div class="p">PHASE 1</div><ul><li>Mint devnet</li><li>Autorités révoquées</li><li>Landing page</li></ul></div>
-      <div class="phase"><div class="p">PHASE 2</div><ul><li>Mint mainnet</li><li>Pool de liquidité</li><li>LP locké</li></ul></div>
-      <div class="phase"><div class="p">PHASE 3</div><ul><li>Boost en $PWAR</li><li>Staking</li><li>Rewards d'arène</li></ul></div>
-      <div class="phase"><div class="p">PHASE 4</div><ul><li>Gouvernance</li><li>Listings CEX</li><li>Partenariats</li></ul></div>
+    <div class="head">
+      <div class="eyebrow">// Roadmap</div>
+      <h2>The campaign</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card pxc panel acc neon-pump"><span class="tagpx">Phase 1 · Now</span><h3>Launch</h3><p>Devnet mint, authorities renounced, this page live, metadata on Arweave.</p></div>
+      <div class="card pxc panel acc neon-violet"><span class="tagpx">Phase 2</span><h3>Market</h3><p>Mainnet mint, DEX liquidity, LP locked, listed on Jupiter.</p></div>
+      <div class="card pxc panel acc neon-gold"><span class="tagpx">Phase 3</span><h3>Utility</h3><p>Boost in $PWAR, staking, and arena rewards go live.</p></div>
+      <div class="card pxc panel acc neon-sol"><span class="tagpx">Phase 4</span><h3>Expand</h3><p>Governance, CEX listings, partnerships across the memecoin arena.</p></div>
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="head">
+      <div class="eyebrow">// Questions</div>
+      <h2>FAQ</h2>
+    </div>
+    <div class="faq">
+      <details class="pxc panel"><summary>Is $PWAR just another memecoin?</summary><p>No. It's the utility token of PumpWar, a live on-chain arena. It has a working product behind it and real in-app use — boosting, staking, governance — instead of only a chart.</p></details>
+      <details class="pxc panel"><summary>Can the team mint more or freeze my tokens?</summary><p>No. The supply is fixed at 1B and the mint authority is renounced, so no new tokens can ever be created. The freeze authority is renounced too, so no wallet can be frozen. Both are verifiable on-chain.</p></details>
+      <details class="pxc panel"><summary>Where can I buy it?</summary><p>Once liquidity is live on mainnet, you'll swap SOL for $PWAR on a Solana DEX (Jupiter / Raydium). The official swap link and contract address will be published here — verify the mint on an explorer first.</p></details>
+      <details class="pxc panel"><summary>What stops the team dumping?</summary><p>The team allocation (15%) is on a 12-month cliff with on-chain vesting (Streamflow), the treasury sits behind a Squads multisig, and DEX liquidity is locked.</p></details>
+      <details class="pxc panel"><summary>Is this financial advice?</summary><p>No. $PWAR is a speculative utility token. Do your own research and only risk what you can afford to lose.</p></details>
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
   <section>
-    <div class="disc">
-      <strong>⚠️ Avertissement.</strong> $PWAR est un token utilitaire spéculatif. Aucune promesse de rendement ni de prix. La valeur des cryptos peut tomber à zéro. N'investis que ce que tu peux te permettre de perdre, fais tes propres recherches (DYOR), et vérifie l'adresse du contrat sur l'explorer officiel. Ceci n'est pas un conseil financier.
+    <div class="disc pxc panel acc neon-gold">
+      <strong>⚠️ Disclaimer.</strong> $PWAR is a speculative utility token, not an investment. No promise of price or return — crypto can go to zero. Only risk what you can afford to lose, do your own research (DYOR), and always verify the contract address on the official explorer. Nothing here is financial advice.
     </div>
   </section>
 
 </main>
 
 <footer>
-  <div class="wrap">
-    <div class="links">
-      <a href="https://pumpwar.xyz">pumpwar.xyz</a>
+  <div class="wrap row">
+    <div class="brand">PUMP<b>WAR</b></div>
+    <nav class="links">
+      <a href="https://pumpwar.xyz">Arena</a>
+      <a href="#tokenomics">Tokenomics</a>
       <a href="#">X / Twitter</a>
       <a href="#">Telegram</a>
-      <a href="#tokenomics">Tokenomics</a>
-    </div>
-    <div>© 2026 PumpWar — $PWAR. The board is bought, not earned.</div>
+    </nav>
   </div>
+  <div class="wrap" style="margin-top:16px"><span class="fine">© 2026 PumpWar — $PWAR. The board is bought, not earned. Not financial advice.</span></div>
 </footer>
+
+<script>
+  (function(){
+    var b=document.getElementById('copyBtn'), c=document.getElementById('mint');
+    if(!b||!c) return;
+    b.addEventListener('click',function(){
+      var t=(c.textContent||'').trim();
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(t).then(function(){b.textContent='Copied ✓';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){});
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
