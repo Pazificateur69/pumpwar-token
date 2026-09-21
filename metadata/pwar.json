@@ -2,13 +2,13 @@
   "name": "PumpWar",
   "symbol": "PWAR",
   "description": "The official utility token of PumpWar — the memecoin rank war arena. Boost projects into the throne, stake for rewards, and govern the arena.",
-  "image": "https://REMPLACE-MOI.example/pwar-logo.png",
+  "image": "https://pazificateur69.github.io/pumpwar-token/assets/pwar-logo.png",
   "external_url": "https://pumpwar.xyz",
   "attributes": [],
   "properties": {
     "category": "image",
     "files": [
-      { "uri": "https://REMPLACE-MOI.example/pwar-logo.png", "type": "image/png" }
+      { "uri": "https://pazificateur69.github.io/pumpwar-token/assets/pwar-logo.png", "type": "image/png" }
     ]
   }
 }
